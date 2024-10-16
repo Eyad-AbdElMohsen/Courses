@@ -1,7 +1,14 @@
 import mongoose, { Model, Schema, Document } from "mongoose"
+import dotenv from 'dotenv'
 
-const DB_URL = "mongodb://localhost:27017"
-mongoose.connect(DB_URL).then(()=> console.log('mongodb server start'))
+dotenv.config()
+
+const DB_URL = process.env.MONGO_URL
+console.log(DB_URL)
+if(typeof DB_URL == 'string')
+    mongoose.connect(DB_URL).then(()=> console.log('mongodb server start'))
+else
+    throw new Error('DB_URL must be a string');
 
 const courseSchema: Schema = new mongoose.Schema({
     title: { type: String, required: true },
