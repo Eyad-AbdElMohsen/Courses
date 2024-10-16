@@ -20,7 +20,7 @@ const addNewCourse = async(req: Request, res: Response) => {
     try{
         const course = await Course.findOne({title: req.body.title})
         if(course){
-            res.json({
+            res.status(409).json({
                 msg: 'this course alreay exists'
             })
             return

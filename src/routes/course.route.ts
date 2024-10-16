@@ -13,5 +13,5 @@ courseRouter.route('/:courseId')
                 .patch(updateCourseValidation, updateCourse)
                 .delete(deleteCourse)
 
-export { courseRouter }
+export default courseRouter
 

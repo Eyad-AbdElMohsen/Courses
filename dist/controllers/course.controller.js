@@ -31,7 +31,7 @@ const addNewCourse = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     try {
         const course = yield course_model_1.Course.findOne({ title: req.body.title });
         if (course) {
-            res.json({
+            res.status(409).json({
                 msg: 'this course alreay exists'
             });
             return;
