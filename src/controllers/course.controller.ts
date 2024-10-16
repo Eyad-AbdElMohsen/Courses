@@ -7,7 +7,10 @@ import ApiError from "../errors/api.error";
 
 const getAllCourses = async(req: Request, res: Response, next: NextFunction) => {
     try{
-        const courses = await Course.find()
+        const limit: number = parseInt(String(req.query.limit)) || 10;
+        const page: number = parseInt(String(req.query.page)) || 1;
+        const skip: number = (page - 1) * limit
+        const courses = await Course.find({}, {"__v": false}).limit(limit).skip(skip)
         res.status(200).json({
             status: SUCCESS,
             data: {courses}

@@ -19,7 +19,10 @@ const httpStatusText_1 = require("../utils/httpStatusText");
 const api_error_1 = __importDefault(require("../errors/api.error"));
 const getAllCourses = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const courses = yield course_model_1.Course.find();
+        const limit = parseInt(String(req.query.limit)) || 10;
+        const page = parseInt(String(req.query.page)) || 1;
+        const skip = (page - 1) * limit;
+        const courses = yield course_model_1.Course.find({}, { "__v": false }).limit(limit).skip(skip);
         res.status(200).json({
             status: httpStatusText_1.SUCCESS,
             data: { courses }
