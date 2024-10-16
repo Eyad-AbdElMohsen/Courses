@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateCourseValidation = exports.addCourseValidation = void 0;
+exports.deleteCourseValidation = exports.getCourseValidation = exports.updateCourseValidation = exports.addCourseValidation = void 0;
 const express_validator_1 = require("express-validator");
 exports.addCourseValidation = [
     (0, express_validator_1.body)('title')
@@ -13,6 +13,9 @@ exports.addCourseValidation = [
         .withMessage('price should be numebr')
 ];
 exports.updateCourseValidation = [
+    (0, express_validator_1.param)('courseId')
+        .isMongoId()
+        .withMessage('invalid id'),
     (0, express_validator_1.body)('title')
         .optional()
         .isLength({ min: 2 })
@@ -23,4 +26,14 @@ exports.updateCourseValidation = [
         .withMessage('price is required')
         .isNumeric()
         .withMessage('price should be numebr')
+];
+exports.getCourseValidation = [
+    (0, express_validator_1.param)('courseId')
+        .isMongoId()
+        .withMessage('invalid id')
+];
+exports.deleteCourseValidation = [
+    (0, express_validator_1.param)('courseId')
+        .isMongoId()
+        .withMessage('invalid id')
 ];

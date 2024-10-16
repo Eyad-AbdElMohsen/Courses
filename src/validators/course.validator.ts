@@ -1,4 +1,4 @@
-import {body} from 'express-validator'
+import {body, param} from 'express-validator'
 
 export const addCourseValidation = [
     body('title')
@@ -12,6 +12,9 @@ export const addCourseValidation = [
 ]
 
 export const updateCourseValidation = [
+    param('courseId')
+    .isMongoId()
+    .withMessage('invalid id'),
     body('title')
         .optional()
         .isLength({min: 2})
@@ -22,4 +25,16 @@ export const updateCourseValidation = [
         .withMessage('price is required')
         .isNumeric()
         .withMessage('price should be numebr')
+]
+
+export const getCourseValidation = [
+    param('courseId')
+    .isMongoId()
+    .withMessage('invalid id')
+]
+
+export const deleteCourseValidation = [
+    param('courseId')
+    .isMongoId()
+    .withMessage('invalid id')
 ]

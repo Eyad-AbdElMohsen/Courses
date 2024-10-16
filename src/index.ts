@@ -1,5 +1,6 @@
 import express , {Express , Request , Response}from "express" 
-import { courseRouter } from './routes/course.route';
+import  courseRouter  from './routes/course.route';
+import errorMiddleware from "./middlewares/error.middleware";
 
 const port = 8000;
 
@@ -8,6 +9,9 @@ const app : Express = express();
 app.use(express.json())
 
 app.use("/api/courses", courseRouter)
+
+
+app.use(errorMiddleware)
 
 
 

@@ -8,7 +8,7 @@ courseRouter.route('/')
     .get(course_controller_1.getAllCourses)
     .post(course_validator_1.addCourseValidation, course_controller_1.addNewCourse);
 courseRouter.route('/:courseId')
-    .get(course_controller_1.getCourse)
+    .get(course_validator_1.getCourseValidation, course_controller_1.getCourse)
     .patch(course_validator_1.updateCourseValidation, course_controller_1.updateCourse)
-    .delete(course_controller_1.deleteCourse);
+    .delete(course_validator_1.deleteCourseValidation, course_controller_1.deleteCourse);
 exports.default = courseRouter;

@@ -8,101 +8,106 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteCourse = exports.updateCourse = exports.getCourse = exports.addNewCourse = exports.getAllCourses = void 0;
 const express_validator_1 = require("express-validator");
 const course_model_1 = require("../models/course.model");
-const getAllCourses = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const httpStatusText_1 = require("../utils/httpStatusText");
+const api_error_1 = __importDefault(require("../errors/api.error"));
+const getAllCourses = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const courses = yield course_model_1.Course.find();
-        res.status(200).json(courses);
+        res.status(200).json({
+            status: httpStatusText_1.SUCCESS,
+            data: { courses }
+        });
     }
     catch (err) {
-        res.status(500).json({ message: 'Error getting all courses: ', err });
+        next(err);
     }
 });
 exports.getAllCourses = getAllCourses;
-const addNewCourse = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const errors = (0, express_validator_1.validationResult)(req);
-    if (!errors.isEmpty()) {
-        res.status(400).json(errors.array());
-        return;
-    }
+const addNewCourse = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const errors = (0, express_validator_1.validationResult)(req);
+        if (!errors.isEmpty()) {
+            throw new api_error_1.default('validation error ', 400, errors.array());
+        }
         const course = yield course_model_1.Course.findOne({ title: req.body.title });
         if (course) {
-            res.status(409).json({
-                msg: 'this course alreay exists'
-            });
-            return;
+            throw new api_error_1.default('course already exists', 409, course);
         }
-        else {
-            const newCourse = new course_model_1.Course(req.body);
-            yield newCourse.save();
-            res.status(201).json(newCourse);
-        }
+        const newCourse = new course_model_1.Course(req.body);
+        yield newCourse.save();
+        res.status(201).json(newCourse);
     }
     catch (err) {
-        res.status(500).json({ message: 'Error adding new course: ', err });
+        next(err);
     }
 });
 exports.addNewCourse = addNewCourse;
-const getCourse = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getCourse = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const errors = (0, express_validator_1.validationResult)(req);
+        if (!errors.isEmpty()) {
+            throw new api_error_1.default('validation error ', 400, errors.array());
+        }
         const course = yield course_model_1.Course.findById(req.params.courseId);
         if (!course) {
-            res.status(404).json({
-                msg: 'course not found'
-            });
-            return;
+            throw new api_error_1.default('course not found ', 404);
         }
-        res.status(200).json(course);
+        res.status(200).json({
+            status: httpStatusText_1.SUCCESS,
+            data: { course }
+        });
     }
     catch (err) {
-        res.status(500).json({ message: 'Error getting course: ', err });
+        next(err);
     }
 });
 exports.getCourse = getCourse;
-const updateCourse = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const errors = (0, express_validator_1.validationResult)(req);
-    if (!errors.isEmpty()) {
-        res.status(400).json(errors.array());
-        return;
-    }
+const updateCourse = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const errors = (0, express_validator_1.validationResult)(req);
+        if (!errors.isEmpty()) {
+            throw new api_error_1.default('validation error ', 400, errors.array());
+        }
         const course = yield course_model_1.Course.findById(req.params.courseId);
         if (!course) {
-            res.status(404).json({
-                msg: 'course not found'
-            });
-            return;
+            throw new api_error_1.default('course not found ', 404);
         }
         yield course_model_1.Course.updateOne({ _id: req.params.courseId }, Object.assign({}, req.body));
         res.status(200).json({
-            msg: 'Course is updated successfully'
+            status: httpStatusText_1.SUCCESS,
+            data: { course }
         });
     }
     catch (err) {
-        res.status(500).json({ message: 'Error updating course: ', err });
+        next(err);
     }
 });
 exports.updateCourse = updateCourse;
-const deleteCourse = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteCourse = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const errors = (0, express_validator_1.validationResult)(req);
+        if (!errors.isEmpty()) {
+            throw new api_error_1.default('validation error ', 400, errors.array());
+        }
         const course = yield course_model_1.Course.findById(req.params.courseId);
         if (!course) {
-            res.status(404).json({
-                msg: 'course not found'
-            });
-            return;
+            throw new api_error_1.default('course not found ', 404);
         }
         yield course_model_1.Course.deleteOne({ _id: req.params.courseId });
         res.status(200).json({
-            msg: 'Course is deleted successfully',
+            status: httpStatusText_1.SUCCESS,
+            data: null
         });
     }
     catch (err) {
-        res.status(500).json({ message: 'Error deleting course: ', err });
+        next(err);
     }
 });
 exports.deleteCourse = deleteCourse;
