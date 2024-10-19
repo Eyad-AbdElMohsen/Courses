@@ -4,6 +4,7 @@ import  dotenv from "dotenv";
 import  courseRouter  from './routes/course.route';
 import errorMiddleware from "./middlewares/error.middleware";
 import notFoundMiddleware from "./middlewares/notFound.middleware";
+import userRouter from "./routes/user.route";
 
 dotenv.config()
 
@@ -15,6 +16,7 @@ app.use(cors())
 app.use(express.json())
 
 app.use("/api/courses", courseRouter)
+app.use('/api/users', userRouter)
 
 //global middleware
 app.all('*', notFoundMiddleware);
