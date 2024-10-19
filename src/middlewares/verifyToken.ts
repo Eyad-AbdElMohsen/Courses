@@ -9,16 +9,16 @@ dotenv.config()
 
 export interface CustomRequest extends Request {
     headers: {
-        Authorization?: string | string[]; 
+        authorization?: string
         [key: string]: string | string[] | undefined; 
     };
 }
 
 export const verifyToken = (req: CustomRequest, res: Response, next: NextFunction) => {
-    const authHeader = req.headers.Authorization;
+    const authHeader = req.headers.authorization;
     if(authHeader){
         const token = Array.isArray(authHeader) ? authHeader[0] : authHeader.split(' ')[1];
-        asyncWrapper( async(req: Request, res: Response) => {
+        try{
             if(secretKey){
                 jwt.verify(token, secretKey) as jwt.JwtPayload
                 console.log("done")
@@ -26,7 +26,9 @@ export const verifyToken = (req: CustomRequest, res: Response, next: NextFunctio
             }else{
                 throw new Error('secretKey must be a string')
             }
-        })
+        }catch(err){
+            throw new Error('error' + err)
+        }
     }else{
         throw new ApiError('token is required ', 401)
     }

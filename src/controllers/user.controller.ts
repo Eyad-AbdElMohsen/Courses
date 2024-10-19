@@ -7,7 +7,6 @@ import { asyncWrapper } from "../middlewares/asyncWrapper";
 import bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
 import { generateJWT } from "../utils/generateJWT";
-import { verifyToken } from "../middlewares/verifyToken";
 
 dotenv.config()
 
