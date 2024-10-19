@@ -28,7 +28,10 @@ const addNewCourse = asyncWrapper( async(req: Request, res: Response) => {
     }
     const newCourse = new Course(req.body)
     await newCourse.save()
-    res.status(201).json(newCourse)
+    res.status(200).json({
+        status: SUCCESS,
+        data: {newCourse}
+    })
 })
 
 

@@ -40,7 +40,10 @@ const addNewCourse = (0, asyncWrapper_1.asyncWrapper)((req, res) => __awaiter(vo
     }
     const newCourse = new course_model_1.Course(req.body);
     yield newCourse.save();
-    res.status(201).json(newCourse);
+    res.status(200).json({
+        status: httpStatusText_1.SUCCESS,
+        data: { newCourse }
+    });
 }));
 exports.addNewCourse = addNewCourse;
 const getCourse = (0, asyncWrapper_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {

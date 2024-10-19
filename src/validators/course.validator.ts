@@ -13,8 +13,8 @@ export const addCourseValidation = [
 
 export const updateCourseValidation = [
     param('courseId')
-    .isMongoId()
-    .withMessage('invalid id'),
+        .isMongoId()
+        .withMessage('invalid id'),
     body('title')
         .optional()
         .isLength({min: 2})
