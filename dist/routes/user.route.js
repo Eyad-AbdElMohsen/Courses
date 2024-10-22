@@ -6,11 +6,12 @@ const user_validator_1 = require("../validators/user.validator");
 const verifyToken_1 = require("../middlewares/verifyToken");
 const allowedTo_1 = require("../middlewares/allowedTo");
 const userRoles_1 = require("../utils/userRoles");
+const multer_1 = require("../utils/multer");
 const userRouter = (0, express_1.Router)();
 userRouter.route('/')
     .get(verifyToken_1.verifyToken, (0, allowedTo_1.allowedTo)(userRoles_1.ADMIN, userRoles_1.MANAGER), verifyToken_1.verifyToken, user_controller_1.getAllUsers);
 userRouter.route('/signup')
-    .post(user_validator_1.signUpValidation, user_controller_1.postSignUp);
+    .post(multer_1.upload.single('avatar'), user_validator_1.signUpValidation, user_controller_1.postSignUp);
 userRouter.route('/login')
     .post(user_validator_1.loginValidation, user_controller_1.postLogIn);
 exports.default = userRouter;

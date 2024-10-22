@@ -8,6 +8,8 @@ import bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
 import { generateJWT } from "../utils/generateJWT";
 
+
+
 dotenv.config()
 
 const getAllUsers = asyncWrapper( async(req: Request, res: Response) => {
@@ -35,6 +37,7 @@ const postSignUp = asyncWrapper( async(req: Request, res: Response) => {
     const hashedPass = await bcrypt.hash(password, 10);
     const newUser = new User({
         ...req.body,
+        avatar: req.file?.filename,
         password: hashedPass,
     })
     const token = await generateJWT({ 

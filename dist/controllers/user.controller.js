@@ -34,6 +34,7 @@ const getAllUsers = (0, asyncWrapper_1.asyncWrapper)((req, res) => __awaiter(voi
 }));
 exports.getAllUsers = getAllUsers;
 const postSignUp = (0, asyncWrapper_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const password = req.body.password;
     const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
@@ -44,7 +45,7 @@ const postSignUp = (0, asyncWrapper_1.asyncWrapper)((req, res) => __awaiter(void
         throw new api_error_1.default('email already exists', 409, user);
     }
     const hashedPass = yield bcrypt_1.default.hash(password, 10);
-    const newUser = new user_model_1.User(Object.assign(Object.assign({}, req.body), { password: hashedPass }));
+    const newUser = new user_model_1.User(Object.assign(Object.assign({}, req.body), { avatar: (_a = req.file) === null || _a === void 0 ? void 0 : _a.filename, password: hashedPass }));
     const token = yield (0, generateJWT_1.generateJWT)({
         email: newUser.email,
         role: newUser.role,
