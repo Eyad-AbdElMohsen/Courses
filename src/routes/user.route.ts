@@ -3,13 +3,13 @@ import { getAllUsers, postLogIn, postSignUp } from '../controllers/user.controll
 import {loginValidation, signUpValidation} from '../validators/user.validator';
 import { verifyToken } from '../middlewares/verifyToken';
 import { allowedTo } from '../middlewares/allowedTo';
-import { ADMIN, MANAGER } from '../utils/userRoles';
 import { upload } from '../utils/multer';
+import { Role } from '../utils/userRoles';
 
 const userRouter = Router()
 
 userRouter.route('/')
-            .get(verifyToken, allowedTo(ADMIN, MANAGER), verifyToken, getAllUsers)
+            .get(verifyToken, allowedTo(Role.ADMIN, Role.MANAGER), verifyToken, getAllUsers)
 
 userRouter.route('/signup')
             .post(upload.single('avatar'), signUpValidation, postSignUp)

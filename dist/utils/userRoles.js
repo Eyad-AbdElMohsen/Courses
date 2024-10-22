@@ -1,4 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MANAGER = exports.USER = exports.ADMIN = void 0;
-exports.ADMIN = 'ADMIN', exports.USER = 'USER', exports.MANAGER = 'MANAGER';
+exports.Role = void 0;
+var Role;
+(function (Role) {
+    Role["ADMIN"] = "ADMIN";
+    Role["USER"] = "USER";
+    Role["MANAGER"] = "MANAGER";
+})(Role || (exports.Role = Role = {}));
