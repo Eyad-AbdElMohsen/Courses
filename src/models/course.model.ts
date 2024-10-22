@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-const DB_URL = process.env.MONGO_URL
+const DB_URL = process.env.DB_URL
 
 if(typeof DB_URL == 'string')
     mongoose.connect(DB_URL).then(()=> console.log('mongodb server start'))

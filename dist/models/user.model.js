@@ -8,7 +8,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const userRoles_1 = require("../utils/userRoles");
 dotenv_1.default.config();
-const DB_URL = process.env.MONGO_URL;
+const DB_URL = process.env.DB_URL;
 if (typeof DB_URL == 'string')
     mongoose_1.default.connect(DB_URL).then(() => console.log('mongodb server start'));
 else
@@ -36,8 +36,8 @@ const userSchema = new mongoose_1.default.Schema({
     },
     role: {
         type: String,
-        enum: [userRoles_1.USER, userRoles_1.ADMIN, userRoles_1.MANAGER],
-        default: userRoles_1.USER
+        enum: [userRoles_1.Role.ADMIN, userRoles_1.Role.MANAGER, userRoles_1.Role.USER],
+        default: userRoles_1.Role.USER
     },
     avatar: {
         type: String,

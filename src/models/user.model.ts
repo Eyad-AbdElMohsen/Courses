@@ -1,10 +1,10 @@
 import mongoose, { Model, Schema, Document, ObjectId } from "mongoose"
 import dotenv from 'dotenv'
-import { ADMIN, MANAGER, USER } from "../utils/userRoles"
+import { Role } from "../utils/userRoles"
 
 dotenv.config()
 
-const DB_URL = process.env.MONGO_URL
+const DB_URL = process.env.DB_URL
 
 if(typeof DB_URL == 'string')
     mongoose.connect(DB_URL).then(()=> console.log('mongodb server start'))
@@ -34,8 +34,8 @@ const userSchema: Schema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: [USER, ADMIN, MANAGER],
-        default: USER
+        enum: [Role.ADMIN, Role.MANAGER, Role.USER],
+        default: Role.USER
     },
     avatar: {
         type: String,
@@ -49,14 +49,14 @@ interface Iuser extends Document{
     email: string,
     password: string,
     token?: string,
-    role: string;
+    role: Role;
     avatar: string,
     _id: ObjectId | string;
 }
 
 export interface JwtPayload {
     email: string;
-    role: string,
+    role: Role,
     id: string;
 }
 
