@@ -1,5 +1,6 @@
 import mongoose, { Model, Schema, Document, ObjectId } from "mongoose"
 import dotenv from 'dotenv'
+import { ADMIN, MANAGER, USER } from "../utils/userRoles"
 
 dotenv.config()
 
@@ -19,7 +20,12 @@ const userSchema: Schema = new mongoose.Schema({
         required: true,
     },
     password: { type: String, required: true },
-    token: {type: String}
+    token: {type: String},
+    role: {
+        type: String,
+        enum: [USER, ADMIN, MANAGER],
+        default: USER
+    }
 });
 
 interface Iuser extends Document{
@@ -28,11 +34,13 @@ interface Iuser extends Document{
     email: string,
     password: string,
     token?: string,
+    role: string;
     _id: ObjectId | string;
 }
 
 export interface JwtPayload {
     email: string;
+    role: string,
     id: string;
 }
 

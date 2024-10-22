@@ -37,7 +37,11 @@ const postSignUp = asyncWrapper( async(req: Request, res: Response) => {
         ...req.body,
         password: hashedPass,
     })
-    const token = await generateJWT({ email: newUser.email, id: newUser._id.toString()});
+    const token = await generateJWT({ 
+        email: newUser.email, 
+        role: newUser.role,
+        id: newUser._id.toString(), 
+    });
     newUser.token = token
     await newUser.save()
     res.status(200).json({
@@ -57,13 +61,14 @@ const postLogIn = asyncWrapper( async(req: Request, res: Response) => {
         throw new ApiError("Password isn't correct" ,  400)
     }
     // login successfully
-    const token = await generateJWT({ email: user.email, id: user._id.toString()});
+    const token = await generateJWT({ email: user.email, id: user._id.toString(), role: user.role});
     user.token = token
     res.status(200).json({
         status: SUCCESS,
         data: {
             email: user.email,
             Name: user.firstName + ' ' + user.lastName,
+            role: user.role,
             token
         }
     })

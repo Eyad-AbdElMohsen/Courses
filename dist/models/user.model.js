@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const userRoles_1 = require("../utils/userRoles");
 dotenv_1.default.config();
 const DB_URL = process.env.MONGO_URL;
 if (typeof DB_URL == 'string')
@@ -21,6 +22,11 @@ const userSchema = new mongoose_1.default.Schema({
         required: true,
     },
     password: { type: String, required: true },
-    token: { type: String }
+    token: { type: String },
+    role: {
+        type: String,
+        enum: [userRoles_1.USER, userRoles_1.ADMIN, userRoles_1.MANAGER],
+        default: userRoles_1.USER
+    }
 });
 exports.User = mongoose_1.default.model('User', userSchema);

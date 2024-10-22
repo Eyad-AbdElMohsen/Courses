@@ -45,7 +45,11 @@ const postSignUp = (0, asyncWrapper_1.asyncWrapper)((req, res) => __awaiter(void
     }
     const hashedPass = yield bcrypt_1.default.hash(password, 10);
     const newUser = new user_model_1.User(Object.assign(Object.assign({}, req.body), { password: hashedPass }));
-    const token = yield (0, generateJWT_1.generateJWT)({ email: newUser.email, id: newUser._id.toString() });
+    const token = yield (0, generateJWT_1.generateJWT)({
+        email: newUser.email,
+        role: newUser.role,
+        id: newUser._id.toString(),
+    });
     newUser.token = token;
     yield newUser.save();
     res.status(200).json({
@@ -65,13 +69,14 @@ const postLogIn = (0, asyncWrapper_1.asyncWrapper)((req, res) => __awaiter(void 
         throw new api_error_1.default("Password isn't correct", 400);
     }
     // login successfully
-    const token = yield (0, generateJWT_1.generateJWT)({ email: user.email, id: user._id.toString() });
+    const token = yield (0, generateJWT_1.generateJWT)({ email: user.email, id: user._id.toString(), role: user.role });
     user.token = token;
     res.status(200).json({
         status: httpStatusText_1.SUCCESS,
         data: {
             email: user.email,
             Name: user.firstName + ' ' + user.lastName,
+            role: user.role,
             token
         }
     });

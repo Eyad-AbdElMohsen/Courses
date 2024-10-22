@@ -12,11 +12,11 @@ dotenv_1.default.config();
 const verifyToken = (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (authHeader) {
-        const token = Array.isArray(authHeader) ? authHeader[0] : authHeader.split(' ')[1];
+        const token = authHeader.split(' ')[1];
         try {
             if (generateJWT_1.secretKey) {
-                jsonwebtoken_1.default.verify(token, generateJWT_1.secretKey);
-                console.log("done");
+                const user = jsonwebtoken_1.default.verify(token, generateJWT_1.secretKey);
+                req.currentUser = user;
                 next();
             }
             else {
