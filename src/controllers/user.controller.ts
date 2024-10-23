@@ -6,7 +6,7 @@ import { asyncWrapper } from "../middlewares/asyncWrapper";
 import bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
 import { generateJWT } from "../utils/generateJWT";
-
+import * as usersServices from '../services/users.service'
 
 
 dotenv.config()
@@ -14,7 +14,7 @@ dotenv.config()
 const getAllUsers = asyncWrapper( async(req: Request, res: Response) => {
     const limit: number = Number(req.query.limit);
     const skip: number = Number(req.query.skip);
-    const users = await User.find({}, {"__v": false, "password": false}).limit(limit).skip(skip)
+    const users = await usersServices.getAllUsers(limit, skip)
     res.status(200).json({
         status: SUCCESS,
         data: {users}
@@ -23,24 +23,11 @@ const getAllUsers = asyncWrapper( async(req: Request, res: Response) => {
 
 
 const postSignUp = asyncWrapper( async(req: Request, res: Response) => {
-    const password = req.body.password
-    const user = await User.findOne({email: req.body.email})
+    const user = await usersServices.getUser(req.body.email)
     if(user){
         throw new ApiError('email already exists', 409, user)
     }
-    const hashedPass = await bcrypt.hash(password, 10);
-    const newUser = new User({
-        ...req.body,
-        avatar: req.file?.filename,
-        password: hashedPass,
-    })
-    const token = await generateJWT({ 
-        email: newUser.email, 
-        role: newUser.role,
-        id: newUser._id.toString(), 
-    });
-    newUser.token = token
-    await newUser.save()
+    const newUser = await usersServices.postSignUp(req.body, req.file?.filename)
     res.status(200).json({
         status: SUCCESS,
         data: {newUser}
@@ -48,18 +35,15 @@ const postSignUp = asyncWrapper( async(req: Request, res: Response) => {
 })
 
 const postLogIn = asyncWrapper( async(req: Request, res: Response) => {
-    const {email , password} = req.body
-    const user = await User.findOne({email: email})
+    const user = await usersServices.getUser(req.body.email)
     if(!user){
         throw new ApiError('email is not found', 404)
     }
-    let correctPasword: boolean = await bcrypt.compare(password , user.password)
+    let correctPasword: boolean = await usersServices.correctPassword(req.body.password, user)
     if(!correctPasword){
         throw new ApiError("Password isn't correct" ,  400)
     }
-    // login successfully
-    const token = await generateJWT({ email: user.email, id: user._id.toString(), role: user.role});
-    user.token = token
+    const token = usersServices.postLogIn(req.body.email, user)
     res.status(200).json({
         status: SUCCESS,
         data: {

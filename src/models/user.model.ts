@@ -43,7 +43,7 @@ const userSchema: Schema = new mongoose.Schema({
     }
 });
 
-interface IUser extends Document{
+export interface IUser extends Document{
     firstName: string,
     lastName: string,
     email: string,
@@ -58,6 +58,17 @@ export interface JwtPayload {
     email: string;
     role: Role,
     id: string;
+}
+
+export interface CreateUserData {
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string,
+    token?: string,
+    role: Role;
+    avatar: string,
+    _id: ObjectId | string;
 }
 
 export const User: Model<IUser> = mongoose.model<IUser>('User', userSchema);
