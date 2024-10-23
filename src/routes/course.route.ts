@@ -4,12 +4,13 @@ import { addCourseValidation, updateCourseValidation, getCourseValidation, delet
 import { allowedTo } from '../middlewares/allowedTo';
 import { verifyToken } from '../middlewares/verifyToken';
 import { Role } from '../utils/userRoles';
+import { pagination } from '../utils/pagination';
 
 
 const courseRouter = Router()
 
 courseRouter.route('/')
-                .get(getAllCourses)
+                .get(pagination, getAllCourses)
                 .post(verifyToken, allowedTo(Role.ADMIN, Role.MANAGER), addCourseValidation, addNewCourse)
 
 courseRouter.route('/:courseId')
