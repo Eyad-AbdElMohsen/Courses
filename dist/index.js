@@ -14,7 +14,7 @@ const user_route_1 = __importDefault(require("./routes/user.route"));
 dotenv_1.default.config();
 const port = process.env.port || 4000;
 const app = (0, express_1.default)();
-app.use('/uploads', express_1.default.static(path_1.default.join(__dirname, 'uploads')));
+app.use('/uploads', express_1.default.static(path_1.default.join(__dirname, '../uploads')));
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use("/api/courses", course_route_1.default);

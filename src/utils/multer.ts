@@ -5,7 +5,7 @@ import ApiError from "../errors/api.error";
 
 const diskStorage = multer.diskStorage({
     destination: (req: Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
-        cb(null, path.join(__dirname, '../uploads'))
+        cb(null, path.join(__dirname, '../../uploads'))
     },
     filename: (req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
         const fileName = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;

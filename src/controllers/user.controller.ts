@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { validationResult } from "express-validator";
 import { User } from "../models/user.model";
 import { SUCCESS } from "../utils/httpStatusText";
 import ApiError from "../errors/api.error";
@@ -13,9 +12,8 @@ import { generateJWT } from "../utils/generateJWT";
 dotenv.config()
 
 const getAllUsers = asyncWrapper( async(req: Request, res: Response) => {
-    const limit: number = parseInt(String(req.query.limit)) || 10;
-    const page: number = parseInt(String(req.query.page)) || 1;
-    const skip: number = (page - 1) * limit
+    const limit: number = Number(req.query.limit);
+    const skip: number = Number(req.query.skip);
     const users = await User.find({}, {"__v": false, "password": false}).limit(limit).skip(skip)
     res.status(200).json({
         status: SUCCESS,
@@ -26,10 +24,6 @@ const getAllUsers = asyncWrapper( async(req: Request, res: Response) => {
 
 const postSignUp = asyncWrapper( async(req: Request, res: Response) => {
     const password = req.body.password
-    const errors = validationResult(req);
-    if(!errors.isEmpty()){
-        throw new ApiError('validation error ', 400, errors.array())
-    }
     const user = await User.findOne({email: req.body.email})
     if(user){
         throw new ApiError('email already exists', 409, user)

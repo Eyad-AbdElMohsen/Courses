@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 import { secretKey } from "../utils/generateJWT";
 import { JwtPayload} from '../models/user.model'
+import { asyncWrapper } from "./asyncWrapper";
 
 dotenv.config()
 
@@ -15,22 +16,16 @@ export interface CustomRequest extends Request {
     },
 }
 
-export const verifyToken = (req: CustomRequest, res: Response, next: NextFunction) => {
+export const verifyToken = asyncWrapper(async(req: CustomRequest, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
-    if(authHeader){
-        const token = authHeader.split(' ')[1];
-        try{
-            if(secretKey){
-                const user = jwt.verify(token, secretKey) as JwtPayload
-                req.currentUser = user
-                next()
-            }else{
-                throw new Error('secretKey must be a string')
-            }
-        }catch(err){
-            throw new Error('error' + err)
-        }
-    }else{
+    if(!authHeader){
         throw new ApiError('token is required ', 401)
     }
-}
+    const token = authHeader.split(' ')[1];
+    if(!secretKey){
+        throw new ApiError('internal server error', 500)
+    }
+    const user = jwt.verify(token, secretKey) as JwtPayload
+    req.currentUser = user
+    next()
+})

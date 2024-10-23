@@ -13,7 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postSignUp = exports.postLogIn = exports.getAllUsers = void 0;
-const express_validator_1 = require("express-validator");
 const user_model_1 = require("../models/user.model");
 const httpStatusText_1 = require("../utils/httpStatusText");
 const api_error_1 = __importDefault(require("../errors/api.error"));
@@ -23,9 +22,8 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const generateJWT_1 = require("../utils/generateJWT");
 dotenv_1.default.config();
 const getAllUsers = (0, asyncWrapper_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const limit = parseInt(String(req.query.limit)) || 10;
-    const page = parseInt(String(req.query.page)) || 1;
-    const skip = (page - 1) * limit;
+    const limit = Number(req.query.limit);
+    const skip = Number(req.query.skip);
     const users = yield user_model_1.User.find({}, { "__v": false, "password": false }).limit(limit).skip(skip);
     res.status(200).json({
         status: httpStatusText_1.SUCCESS,
@@ -36,10 +34,6 @@ exports.getAllUsers = getAllUsers;
 const postSignUp = (0, asyncWrapper_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const password = req.body.password;
-    const errors = (0, express_validator_1.validationResult)(req);
-    if (!errors.isEmpty()) {
-        throw new api_error_1.default('validation error ', 400, errors.array());
-    }
     const user = yield user_model_1.User.findOne({ email: req.body.email });
     if (user) {
         throw new api_error_1.default('email already exists', 409, user);

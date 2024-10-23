@@ -15,9 +15,19 @@ const courseSchema: Schema = new mongoose.Schema({
     price: { type: Number, required: true }
 });
 
-interface ICourse extends Document{
+export interface ICourse extends Document{
     title: string,
     price: number
+}
+
+export interface CreateCourseData {
+    title: string,
+    price: number
+}
+
+export interface UpdateCourseData {
+    title?: string,
+    price?: number
 }
 
 export const Course: Model<ICourse> = mongoose.model<ICourse>('Course', courseSchema);

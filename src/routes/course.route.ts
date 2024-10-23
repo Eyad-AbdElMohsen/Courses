@@ -5,18 +5,19 @@ import { allowedTo } from '../middlewares/allowedTo';
 import { verifyToken } from '../middlewares/verifyToken';
 import { Role } from '../utils/userRoles';
 import { pagination } from '../utils/pagination';
+import validationMiddleware from '../middlewares/validation.middleware';
 
 
 const courseRouter = Router()
 
 courseRouter.route('/')
                 .get(pagination, getAllCourses)
-                .post(verifyToken, allowedTo(Role.ADMIN, Role.MANAGER), addCourseValidation, addNewCourse)
+                .post(verifyToken, allowedTo(Role.ADMIN, Role.MANAGER), addCourseValidation, validationMiddleware, addNewCourse)
 
 courseRouter.route('/:courseId')
                 .get(getCourseValidation, getCourse)
-                .patch(verifyToken, allowedTo(Role.ADMIN, Role.MANAGER), updateCourseValidation, updateCourse)
-                .delete(verifyToken, allowedTo(Role.ADMIN, Role.MANAGER), deleteCourseValidation, deleteCourse)
+                .patch(verifyToken, allowedTo(Role.ADMIN, Role.MANAGER), updateCourseValidation, validationMiddleware, updateCourse)
+                .delete(verifyToken, allowedTo(Role.ADMIN, Role.MANAGER), deleteCourseValidation, validationMiddleware, deleteCourse)
 
 export default courseRouter
 

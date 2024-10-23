@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -13,16 +36,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteCourse = exports.updateCourse = exports.getCourse = exports.addNewCourse = exports.getAllCourses = void 0;
-const express_validator_1 = require("express-validator");
-const course_model_1 = require("../models/course.model");
 const httpStatusText_1 = require("../utils/httpStatusText");
 const api_error_1 = __importDefault(require("../errors/api.error"));
 const asyncWrapper_1 = require("../middlewares/asyncWrapper");
+const coursesService = __importStar(require("../services/courses.service"));
+const mongoose_1 = require("mongoose");
+const ObjectId = mongoose_1.Types.ObjectId;
 const getAllCourses = (0, asyncWrapper_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const limit = parseInt(String(req.query.limit)) || 10;
-    const page = parseInt(String(req.query.page)) || 1;
-    const skip = (page - 1) * limit;
-    const courses = yield course_model_1.Course.find({}, { "__v": false }).limit(limit).skip(skip);
+    const limit = Number(req.query.limit);
+    const skip = Number(req.query.skip);
+    const courses = yield coursesService.getAllCourses(limit, skip);
     res.status(200).json({
         status: httpStatusText_1.SUCCESS,
         data: { courses }
@@ -30,16 +53,7 @@ const getAllCourses = (0, asyncWrapper_1.asyncWrapper)((req, res) => __awaiter(v
 }));
 exports.getAllCourses = getAllCourses;
 const addNewCourse = (0, asyncWrapper_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const errors = (0, express_validator_1.validationResult)(req);
-    if (!errors.isEmpty()) {
-        throw new api_error_1.default('validation error ', 400, errors.array());
-    }
-    const course = yield course_model_1.Course.findOne({ title: req.body.title });
-    if (course) {
-        throw new api_error_1.default('course already exists', 409, course);
-    }
-    const newCourse = new course_model_1.Course(req.body);
-    yield newCourse.save();
+    const newCourse = yield coursesService.addNewCourse(req.body);
     res.status(200).json({
         status: httpStatusText_1.SUCCESS,
         data: { newCourse }
@@ -47,11 +61,7 @@ const addNewCourse = (0, asyncWrapper_1.asyncWrapper)((req, res) => __awaiter(vo
 }));
 exports.addNewCourse = addNewCourse;
 const getCourse = (0, asyncWrapper_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const errors = (0, express_validator_1.validationResult)(req);
-    if (!errors.isEmpty()) {
-        throw new api_error_1.default('validation error ', 400, errors.array());
-    }
-    const course = yield course_model_1.Course.findById(req.params.courseId);
+    const course = yield coursesService.getCourse(new ObjectId(req.params.courseId));
     if (!course) {
         throw new api_error_1.default('course not found ', 404);
     }
@@ -62,15 +72,11 @@ const getCourse = (0, asyncWrapper_1.asyncWrapper)((req, res) => __awaiter(void 
 }));
 exports.getCourse = getCourse;
 const updateCourse = (0, asyncWrapper_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const errors = (0, express_validator_1.validationResult)(req);
-    if (!errors.isEmpty()) {
-        throw new api_error_1.default('validation error ', 400, errors.array());
-    }
-    const course = yield course_model_1.Course.findById(req.params.courseId);
+    const course = yield coursesService.getCourse(new ObjectId(req.params.courseId));
     if (!course) {
         throw new api_error_1.default('course not found ', 404);
     }
-    yield course_model_1.Course.updateOne({ _id: req.params.courseId }, Object.assign({}, req.body));
+    yield coursesService.updateCourse(req.body, course);
     res.status(200).json({
         status: httpStatusText_1.SUCCESS,
         data: { course }
@@ -78,15 +84,11 @@ const updateCourse = (0, asyncWrapper_1.asyncWrapper)((req, res) => __awaiter(vo
 }));
 exports.updateCourse = updateCourse;
 const deleteCourse = (0, asyncWrapper_1.asyncWrapper)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const errors = (0, express_validator_1.validationResult)(req);
-    if (!errors.isEmpty()) {
-        throw new api_error_1.default('validation error ', 400, errors.array());
-    }
-    const course = yield course_model_1.Course.findById(req.params.courseId);
+    const course = yield coursesService.getCourse(new ObjectId(req.params.courseId));
     if (!course) {
         throw new api_error_1.default('course not found ', 404);
     }
-    yield course_model_1.Course.deleteOne({ _id: req.params.courseId });
+    yield coursesService.deleteCourse(new ObjectId(req.params.courseId));
     res.status(200).json({
         status: httpStatusText_1.SUCCESS,
         data: null

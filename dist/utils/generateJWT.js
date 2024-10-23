@@ -18,8 +18,8 @@ exports.secretKey = process.env.JWT_SECRET;
 const generateJWT = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     //generate token 
     if (exports.secretKey) {
-        const token = yield jsonwebtoken_1.default.sign(payload, 
-        // node -> require('crypto').randomBytes(32).toString('hex') 
+        const token = jsonwebtoken_1.default.sign(payload, 
+        // in terminal -> require('crypto').randomBytes(32).toString('hex') 
         exports.secretKey, { expiresIn: '1h' });
         return token;
     }

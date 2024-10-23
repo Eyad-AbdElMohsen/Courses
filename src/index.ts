@@ -13,7 +13,7 @@ const port = process.env.port || 4000;
 
 const app : Express = express();
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.use(cors())
 app.use(express.json())
