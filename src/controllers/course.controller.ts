@@ -5,7 +5,6 @@ import { asyncWrapper } from "../middlewares/asyncWrapper";
 import * as coursesService from '../services/courses.service'
 import {Types} from "mongoose";
 
-const ObjectId = Types.ObjectId
 
 const getAllCourses = asyncWrapper( async(req: Request, res: Response) => {
     const limit: number = Number(req.query.limit);
@@ -25,6 +24,7 @@ const addNewCourse = asyncWrapper( async(req: Request, res: Response) => {
     })
 })
 
+const ObjectId = Types.ObjectId
 
 const getCourse = asyncWrapper( async(req: Request, res: Response) => {
     const course = await coursesService.getCourse(new ObjectId (req.params.courseId))

@@ -74,7 +74,6 @@ const postLogIn = (0, asyncWrapper_1.asyncWrapper)((req, res) => __awaiter(void 
     if (!correctPasword) {
         throw new api_error_1.default("Password isn't correct", 400);
     }
-    // login successfully
     const token = usersServices.postLogIn(req.body.email, user);
     res.status(200).json({
         status: httpStatusText_1.SUCCESS,

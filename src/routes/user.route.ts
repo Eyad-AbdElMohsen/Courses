@@ -11,7 +11,7 @@ import validationMiddleware from '../middlewares/validation.middleware';
 const userRouter = Router()
 
 userRouter.route('/')
-            .get(verifyToken, allowedTo(Role.ADMIN, Role.MANAGER), verifyToken, pagination, getAllUsers)
+            .get(verifyToken, allowedTo(Role.ADMIN, Role.MANAGER),  pagination, getAllUsers)
 
 userRouter.route('/signup')
             .post(upload.single('avatar'), signUpValidation, validationMiddleware, postSignUp)

@@ -36,7 +36,7 @@ export const correctPassword = async(password: string, user: IUser) :Promise<boo
     return await bcrypt.compare(password , user.password)
 }
 
-export const postLogIn = async(email: string, user: IUser) => {
+export const postLogIn = async(user: IUser) => {
     const token = await generateJWT({ email: user.email, id: user._id.toString(), role: user.role});
     user.token = token
     return token 

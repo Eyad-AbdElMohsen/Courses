@@ -1,11 +1,8 @@
 import { Request, Response } from "express";
-import { User } from "../models/user.model";
 import { SUCCESS } from "../utils/httpStatusText";
 import ApiError from "../errors/api.error";
 import { asyncWrapper } from "../middlewares/asyncWrapper";
-import bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
-import { generateJWT } from "../utils/generateJWT";
 import * as usersServices from '../services/users.service'
 
 
@@ -43,7 +40,7 @@ const postLogIn = asyncWrapper( async(req: Request, res: Response) => {
     if(!correctPasword){
         throw new ApiError("Password isn't correct" ,  400)
     }
-    const token = usersServices.postLogIn(req.body.email, user)
+    const token = usersServices.postLogIn(user)
     res.status(200).json({
         status: SUCCESS,
         data: {
